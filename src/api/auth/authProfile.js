@@ -13,6 +13,11 @@ const authProfile = {
     const url = "profile/update";
     return axiosClient.put(url, payload);
   },
+  updateProfilePassword(payload) {
+    const url = "profile/change-password";
+    console.log(url);
+    return axiosClient.post(url, payload);
+  },
 };
 
 export default authProfile;

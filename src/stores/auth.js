@@ -50,5 +50,12 @@ export const useAuthStore = defineStore({
         console.log(err);
       }
     },
+    async updateProfilePassword(payload) {
+      try {
+        await authProfile.updateProfilePassword(payload);
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 });

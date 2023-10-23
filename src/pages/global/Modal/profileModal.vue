@@ -79,7 +79,6 @@ const handleChange = async (e) => {
 };
 
 const editProfile = async (values) => {
-  console.log(values);
   let a = values.phone.split("");
   let b = a.filter((item) => !isNaN(+item));
   let c = "+" + b.join("");
