@@ -1,8 +1,16 @@
 <template>
   <div>
-    <h1>Courses</h1>
+    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
+      Courses
+    </h1>
     <courseModal ref="modal_value" />
-    <VButton btn_type="primary" @click="openModal">Create course</VButton>
+    <VButton
+      btn_type="primary"
+      @click="openModal"
+      class="m-3"
+      :isLoading="loading"
+      >Create course</VButton
+    >
     <appTable :headers="headers" :body="store?.courses">
       <template #body_action="{ item }">
         <VActions :item="item" :modal_value="modal_value" />

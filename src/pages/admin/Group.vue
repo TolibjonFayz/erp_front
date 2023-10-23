@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h1>Groups</h1>
+    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">Groups</h1>
     <groupModal ref="group_modal" />
-    <VButton @click="openModal" btn_type="primary">Create group</VButton>
+    <VButton @click="openModal" btn_type="primary" class="m-3"
+      >Create group</VButton
+    >
     <appTable :headers="headers" :body="store?.groups">
       <template #body_days="{ item }">
         <div v-if="item.days" class="flex gap-2">

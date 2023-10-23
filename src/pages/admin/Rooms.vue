@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h1>Rooms</h1>
+    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">Rooms</h1>
     <roomModal ref="modal_value" />
-    <VButton btn_type="primary" @click="openModal">Create room</VButton>
+    <VButton btn_type="primary" @click="openModal" class="m-3"
+      >Create room</VButton
+    >
     <appTable :headers="headers" :body="store?.rooms">
       <template #body_action="{ item }">
         <VActions :item="item" :modal_value="modal_value" />
