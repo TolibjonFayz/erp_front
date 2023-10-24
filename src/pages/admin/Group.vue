@@ -1,11 +1,13 @@
 <template>
   <div>
-    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">Groups</h1>
+    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
+      {{ store.$id.toUpperCase() }}
+    </h1>
     <groupModal ref="group_modal" />
     <VButton @click="openModal" btn_type="primary" class="m-3"
       >Create group</VButton
     >
-    <appTable :headers="headers" :body="store?.groups">
+    <AppTable :headers="headers" :body="store?.groups">
       <template #body_days="{ item }">
         <div v-if="item.days" class="flex gap-2">
           <span>Mon</span>
@@ -36,10 +38,22 @@
       <template #body_room="{ item }">
         <span>{{ item?.room?.name }}</span>
       </template>
-      <!-- <template #body_action="{ item }">
-        <VActions :item="item" :modal_value="modal_value" :path=""></VActions>
-      </template> -->
-    </appTable>
+      <template #body_action="{ item }">
+        <VActions
+          :item="item"
+          :modal_value="modal_value"
+          path="/single_group"
+        />
+      </template>
+    </AppTable>
+
+    <v-pagination
+      v-model="params.page"
+      :pages="params.last_page"
+      :range-size="1"
+      active-color="#DCEDFF"
+      @update:modelValue="store.getAdminGroups(params)"
+    />
   </div>
 </template>
 
@@ -47,19 +61,22 @@
 import { onMounted, ref } from "vue";
 import { useGroupStore } from "../../stores/admin/group";
 import { useCourseStore } from "../../stores/admin/course";
-import appTable from "../../components/ui/Table.vue";
+import AppTable from "../../components/ui/Table.vue";
 import VButton from "../../components/form/VButton.vue";
 import groupModal from "./Modals/groupModal.vue";
 import moment from "moment";
 import VActions from "../../components/form/VActions.vue";
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 const store = useGroupStore();
 const store2 = useCourseStore();
 
 const params = ref({
   page: 1,
-  limit: 50,
+  limit: 10,
   last_page: null,
 });
+
 const formatDate = (data) => {
   return moment(data).format("YYYY-MM-DD");
 };
@@ -82,16 +99,16 @@ const headers = ref([
   { title: "End time", value: "end_time" },
   { title: "Status", value: "status" },
   { title: "Room", value: "room" },
-  { title: "Action", value: "actions" },
+  { title: "Action", value: "action" },
 ]);
 
 const openModal = () => {
   group_modal.value.openModal();
+  store2.getAdminCourses(params.value);
 };
 
 onMounted(() => {
   store.getAdminGroups(params.value);
-  store2.getAdminCourses(params.value);
 });
 </script>
 

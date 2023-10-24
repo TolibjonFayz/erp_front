@@ -12,6 +12,7 @@ export const useGroupStore = defineStore({
       try {
         let res = await adminGroup.getAdminGroups(params);
         this.groups = res.groups;
+        params.last_page = Math.ceil(res.count / params.limit);
       } catch (err) {
         console.log(err);
       }
@@ -42,6 +43,15 @@ export const useGroupStore = defineStore({
       try {
         let res = await adminGroup.aviableAdminRooms(payload);
         this.rooms = res;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async createAdminStudent(payload) {
+      try {
+        let res = await adminGroup.createAdminStudent(payload);
+        // this.rooms = res;
       } catch (error) {
         console.log(error);
       }

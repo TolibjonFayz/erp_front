@@ -13,7 +13,7 @@
     </thead>
     <tbody class="text-center">
       <tr v-for="(item, index) in body" :key="index">
-        <td class="border-b p-3" v-for="(col, ind) in headers" :key="ind">
+        <td class="border-b p-1" v-for="(col, ind) in headers" :key="ind">
           <slot :name="`body_${col.value}`" :item="item">
             {{ item[col.value] }}
           </slot>

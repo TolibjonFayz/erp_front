@@ -2,7 +2,7 @@
   <div>
     <studentModal ref="modal_value" />
     <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
-      Students
+      {{ store.$id.toUpperCase() }}
     </h1>
     <VButton
       type="submit"
@@ -51,14 +51,6 @@ const params = {
 
 const openModal = () => {
   modal_value.value.openModal();
-};
-
-const openEditModal = (item) => {
-  modal_value.value.openModal(item);
-};
-
-const openDeleteModal = (id) => {
-  modal_value.value.openDeleteModal(id);
 };
 
 const headers = ref([

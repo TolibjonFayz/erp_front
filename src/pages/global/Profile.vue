@@ -1,5 +1,5 @@
 <template>
-  <h1 class="text-center mt-3 text-3xl text-sky-600 font-semibold">Profile</h1>
+  <h1 class="text-center mt-3 text-3xl text-sky-700 font-semibold">PROFILE</h1>
   <div class="w-full h-full flex items-center justify-center">
     <profileModal ref="profile_modal" />
     <profilePassModal ref="profile_pass_modal" />

@@ -9,13 +9,14 @@
       :class="isOpen ? 'translate-x-0' : '-translate-x-full'"
       class="w-[222px] pt-[21.5px] flex flex-col text-center bg-global1 fixed inset-y-0 left-0 z-20 overflow-y-auto transition duration-300 transform lg:translate-x-0 lg:static top-0"
     >
-      <h1 class="ml-[15px] text-white mb-7">Sidebar</h1>
+      <h1 class="text-white mb-7">Sidebar</h1>
       <router-link
         v-for="(item, index) in menu"
         :key="index"
-        class="flex py-[15px] px-[30px] gap-[15px] text-white"
         :to="item.path"
-        :class="{ 'bg-[#f5fccd] active': $route.meta.child === `${item.keys}` }"
+        class="flex py-[15px] px-[30px] gap-[15px] text-white"
+        active-class="bg-[#984F00] active"
+        :class="{ 'bg-[#984F00] active': $route.meta.child === `${item.keys}` }"
       >
         <SvgIcon type="mdi" :path="item.icon" />
         <span>{{ item.label }}</span>

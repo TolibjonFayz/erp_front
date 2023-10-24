@@ -1,7 +1,10 @@
 <template>
+  <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
+    {{ store.$id.toUpperCase() }}
+  </h1>
   <div class="flex flex-col gap-3 items-start p-3">
     <rolesModal ref="modal_value" />
-    <VButton btn_type="primary" @click="openModal">Create</VButton>
+    <VButton class="ml-3" btn_type="primary" @click="openModal">Create</VButton>
     <AppTable :headers="headers" :body="store?.roles">
       <template #body_action="{ item }">
         <VActions :item="item" :modal_value="modal_value" />

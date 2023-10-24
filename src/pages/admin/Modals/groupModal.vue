@@ -59,7 +59,7 @@
         </option>
       </select>
     </div>
-    <VButton @click="save" btn_type="create">Create group</VButton>
+    <VButton @click="save" btn_type="primary">Create group</VButton>
   </AppModal>
 </template>
 

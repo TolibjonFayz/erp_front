@@ -14,8 +14,9 @@
     >
     </svg-icon>
     <svg-icon
+      v-if="path"
       type="mdi"
-      class="w-[30px] h-[30px] cursor-pointer text-[aqua]"
+      class="w-[25px] h-[25px] cursor-pointer text-cyan-500"
       :path="mdiEye"
       @click="openSingleUser"
     >
@@ -36,7 +37,9 @@ const props = defineProps({
   modal_value: {
     type: String,
   },
-  path: {},
+  path: {
+    type: String,
+  },
 });
 const openEditModal = () => {
   props.modal_value.openModal(props.item);
@@ -47,7 +50,7 @@ const openDeleteModal = () => {
 };
 
 const openSingleUser = () => {
-  router.push("");
+  router.push(`${props.path}/${props.item._id}`);
 };
 </script>
 

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">Rooms</h1>
+    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
+      {{ store.$id.toUpperCase() }}
+    </h1>
     <roomModal ref="modal_value" />
     <VButton btn_type="primary" @click="openModal" class="m-3"
       >Create room</VButton

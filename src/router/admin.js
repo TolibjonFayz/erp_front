@@ -6,42 +6,35 @@ export default {
     {
       path: "/students",
       name: "students",
-      meta: {
-        child: "students",
-      },
       component: import("../pages/admin/Students.vue"),
     },
     {
       path: "/courses",
       name: "courses",
-      meta: {
-        child: "courses",
-      },
       component: import("../pages/admin/Courses.vue"),
-    },
-    {
-      path: "/groups",
-      name: "groups",
-      meta: {
-        child: "groups",
-      },
-      component: import("../pages/admin/Group.vue"),
     },
     {
       path: "/rooms",
       name: "rooms",
-      meta: {
-        child: "rooms",
-      },
       component: import("../pages/admin/Rooms.vue"),
     },
     {
       path: "/profile",
       name: "profile",
-      meta: {
-        child: "profile",
-      },
       component: import("../pages/global/Profile.vue"),
+    },
+    {
+      path: "/groups",
+      name: "groups",
+      component: import("../pages/admin/Group.vue"),
+    },
+    {
+      path: "/single_group/:id",
+      name: "single_group",
+      meta: {
+        child: "single_group",
+      },
+      component: import("../pages/admin/SingleGroup.vue"),
     },
   ],
 };
