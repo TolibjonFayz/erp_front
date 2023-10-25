@@ -48,7 +48,11 @@
     </div>
 
     <div>
-      <select class="m-3 border-2" v-model="select_course">
+      <select
+        class="m-3 border-2"
+        v-model="select_course"
+        @change="handlechangeCourse($event)"
+      >
         <option value="" selected hidden>Select course</option>
         <option
           :value="item._id"
@@ -58,21 +62,35 @@
           {{ item.name }}
         </option>
       </select>
+      <select
+        v-if="store?.teachers.length"
+        class="m-3 border-2"
+        v-model="select_teacher"
+      >
+        <option value="" selected hidden>Select teacher</option>
+        <option
+          :value="item._id"
+          v-for="(item, index) in store?.teachers"
+          :key="index"
+        >
+          {{ item.first_name }}
+        </option>
+      </select>
     </div>
     <VButton @click="save" btn_type="primary">Create group</VButton>
   </AppModal>
 </template>
 
 <script setup>
-import { reactive, ref, watch, computed } from "vue";
+import { reactive, ref, watch } from "vue";
 import AppModal from "../../../components/ui/app-modal.vue";
 import moment from "moment";
 import { useGroupStore } from "../../../stores/admin/group";
 import { useCourseStore } from "../../../stores/admin/course";
 import VButton from "../../../components/form/VButton.vue";
+
 const store = useGroupStore();
 const store2 = useCourseStore();
-
 const dialog = ref(false);
 const dialog2 = ref(false);
 const unique_id = ref();
@@ -80,6 +98,7 @@ const days = ref(null);
 const group_name = ref("");
 const select_room = ref("");
 const select_course = ref("");
+const select_teacher = ref("");
 const start_time = ref();
 const end_time = ref();
 const value1 = ref([new Date(), new Date()]);
@@ -121,6 +140,10 @@ const handleChangeTime = async (e) => {
   await store.aviableAdminRooms(payload);
 };
 
+const handlechangeCourse = async (e) => {
+  await store.getGroupTeacher(e.target.value);
+};
+
 let forms = ref({
   name: "",
   price: "",
@@ -133,15 +156,21 @@ const save = async () => {
     start_time: start_time.value,
     end_time: end_time.value,
     days: days.value,
-    room_id: select_room.value,
-    course_id: select_course.value,
+    room: select_room.value,
+    course: select_course.value,
+    // teacher: select_teacher.value,
     status: true,
   };
-  console.log(result);
   await store.createAdminGroup(result);
+  let result2 = {
+    group: store?.group_id,
+    teacher: select_teacher.value,
+  };
+  await store.addGroupTeacher(result2);
+  console.log(store?.group_id, "group_id");
 };
 
-const openModal = (item) => {
+const openModal = () => {
   dialog.value = true;
 };
 

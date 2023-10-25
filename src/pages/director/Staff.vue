@@ -1,5 +1,5 @@
 <template>
-  <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
+  <h1 class="p-3 text-3xl text-center text-[#BA8D5B] font-semibold">
     {{ store.$id.toUpperCase() }}
   </h1>
   <div class="flex flex-col gap-3 items-start p-3">
@@ -10,6 +10,14 @@
         <VActions :item="item" :modal_value="modal_value" />
       </template>
     </AppTable>
+
+    <v-pagination
+      v-model="params.page"
+      :pages="params.last_page"
+      :range-size="1"
+      active-color="#DCEDFF"
+      @update:modelValue="store.getStaffs(params)"
+    />
   </div>
 </template>
 
@@ -20,6 +28,9 @@ import { useStaffStore } from "../../stores/director/staffs";
 import VActions from "../../components/form/VActions.vue";
 import VButton from "../../components/form/VButton.vue";
 import staffsModal from "./Modal/staffsModal.vue";
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+
 const store = useStaffStore();
 const modal_value = ref("");
 const params = ref({
@@ -40,6 +51,7 @@ const headers = ref([
   { title: "Action", value: "action" },
 ]);
 onMounted(() => {
+  console.log(params.value);
   store.getStaffs(params.value);
 });
 </script>

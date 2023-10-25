@@ -6,6 +6,8 @@ export const useGroupStore = defineStore({
   state: () => ({
     groups: [],
     rooms: [],
+    teachers: [],
+    group_id: "",
   }),
   actions: {
     async getAdminGroups(params) {
@@ -17,16 +19,33 @@ export const useGroupStore = defineStore({
         console.log(err);
       }
     },
+    async getGroupTeacher(id) {
+      try {
+        let res = await adminGroup.getGroupTeacher(id);
+        this.teachers = res.teachers;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async addGroupTeacher(payload) {
+      try {
+        await adminGroup.addGroupTeacher(payload);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async createAdminGroup(payload) {
       try {
-        await adminGroup.createAdminGroup(payload);
+        let res = await adminGroup.createAdminGroup(payload);
+        this.group_id = res.group._id;
       } catch (err) {
         console.log(err);
       }
     },
     async updateAdminGroup(payload, id) {
       try {
-        await adminGroup.updateAdminGroup(payload, id);
+        let res = await adminGroup.updateAdminGroup(payload, id);
+        console.log(res, "res");
       } catch (err) {
         console.log(err);
       }
@@ -51,7 +70,6 @@ export const useGroupStore = defineStore({
     async createAdminStudent(payload) {
       try {
         let res = await adminGroup.createAdminStudent(payload);
-        // this.rooms = res;
       } catch (error) {
         console.log(error);
       }

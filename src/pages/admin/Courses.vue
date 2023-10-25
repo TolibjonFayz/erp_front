@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="p-3 text-3xl text-center text-cyan-700 font-semibold">
+    <h1 class="p-3 text-3xl text-center text-[#BA8D5B] font-semibold">
       {{ store.$id.toUpperCase() }}
     </h1>
     <courseModal ref="modal_value" />

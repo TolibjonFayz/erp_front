@@ -1,6 +1,6 @@
 import {
   mdiAccount,
-  mdiAccountGroup,
+  mdiAccountGroupOutline,
   mdiBook,
   mdiDoorSliding,
   mdiCog,
@@ -20,10 +20,10 @@ export const AdminMenu = [
   },
   {
     path: "/groups",
-    label: "Groups",
-    name: "groups",
+    label: "Group",
+    name: "group",
     keys: "single_group",
-    icon: mdiAccountGroup,
+    icon: mdiAccountGroupOutline,
   },
   {
     path: "/rooms",

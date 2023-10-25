@@ -10,7 +10,7 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 const app = createApp(App);
 import "vue3-tel-input/dist/vue3-tel-input.css";
-
+import "../node_modules/nprogress/nprogress.css";
 import VueTheMask from "vue-the-mask";
 
 app.use(createPinia());

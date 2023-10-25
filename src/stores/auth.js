@@ -18,9 +18,11 @@ export const useAuthStore = defineStore({
           localStorage.setItem("role", res?.user?.role);
           localStorage.setItem("token", res?.tokens?.access_token);
           if (res?.user?.role == "admin") {
-            await router.push({ name: "admin" });
+            await router.push({ name: "students" });
           } else if (res?.user?.role == "director") {
             await router.push({ name: "staffs" });
+          } else if (res?.user?.role == "teacher") {
+            await router.push({ name: "groups" });
           }
         }
       } catch (err) {

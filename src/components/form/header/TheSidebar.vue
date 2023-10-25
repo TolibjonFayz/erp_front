@@ -31,6 +31,7 @@ import SvgIcon from "@jamescoyle/vue-icon";
 import { AdminMenu } from "../../menu/AdminMenu";
 import { UseSaidebar } from "../../../hooks/UseSaidebar";
 import { DirectorMenu } from "../../../components/menu/DirectorMenu";
+import { TeacherMenu } from "../../menu/TeacherMenu";
 import { computed } from "vue";
 const isOpen = UseSaidebar();
 
@@ -40,6 +41,8 @@ const menu = computed(() => {
     return AdminMenu;
   } else if (role == "director") {
     return DirectorMenu;
+  } else if (role == "teacher") {
+    return TeacherMenu;
   }
 });
 </script>
