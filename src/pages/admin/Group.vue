@@ -3,7 +3,7 @@
     <h1 class="p-3 text-3xl text-center text-[#BA8D5B] font-semibold">
       {{ store.$id.toUpperCase() }}
     </h1>
-    <groupModal ref="group_modal" />
+    <groupModal ref="modal_value" />
     <VButton @click="openModal" btn_type="primary" class="m-3"
       >Create group</VButton
     >
@@ -21,16 +21,16 @@
         </div>
       </template>
       <template #body_start_date="{ item }">
-        <span>{{ formatDate(item?.start_date) }}</span>
+        <span>{{ FormatDate(item?.start_date) }}</span>
       </template>
       <template #body_end_date="{ item }">
-        <span>{{ formatDate(item?.end_date) }}</span>
+        <span>{{ FormatDate(item?.end_date) }}</span>
       </template>
       <template #body_start_time="{ item }">
-        <span>{{ formatTime(item?.start_time) }}</span>
+        <span>{{ FormatTime(item?.start_time) }}</span>
       </template>
       <template #body_end_time="{ item }">
-        <span>{{ formatTime(item?.end_time) }}</span>
+        <span>{{ FormatTime(item?.end_time) }}</span>
       </template>
       <template #body_course="{ item }">
         <span>{{ item?.course?.name }}</span>
@@ -60,34 +60,24 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useGroupStore } from "../../stores/admin/group";
-import { useCourseStore } from "../../stores/admin/course";
 import AppTable from "../../components/ui/Table.vue";
 import VButton from "../../components/form/VButton.vue";
 import groupModal from "./Modals/groupModal.vue";
-import moment from "moment";
+import { FormatDate, FormatTime } from "../../hooks/FormatDate";
 import VActions from "../../components/form/VActions.vue";
 import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 const store = useGroupStore();
-const store2 = useCourseStore();
-
+const modal_value = ref();
 const params = ref({
   page: 1,
   limit: 10,
   last_page: null,
 });
 
-const formatDate = (data) => {
-  return moment(data).format("YYYY-MM-DD");
+const openModal = () => {
+  modal_value.value.openModal();
 };
-
-const formatTime = (time) => {
-  let hour = `${parseInt(time / 60)}`.padStart(2, 0);
-  let minute = `${time % 60}`.padStart(2, 0);
-  let result = `${hour}:${minute}`;
-  return result;
-};
-const group_modal = ref();
 
 const headers = ref([
   { title: "Group name", value: "name" },
@@ -101,11 +91,6 @@ const headers = ref([
   { title: "Room", value: "room" },
   { title: "Action", value: "action" },
 ]);
-
-const openModal = () => {
-  group_modal.value.openModal();
-  store2.getAdminCourses(params.value);
-};
 
 onMounted(() => {
   store.getAdminGroups(params.value);

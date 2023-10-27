@@ -1,197 +1,343 @@
 <template>
   <AppModal v-model="dialog">
-    <h1>Group</h1>
-    <input
-      type="text"
-      v-model="group_name"
-      placeholder="Group name"
-      class="border p-2"
-    />
-    <div class="block">
-      <el-date-picker
-        v-model="value2"
-        type="date"
-        placeholder="Start a date"
-        :default-value="new Date()"
-        @change="handleChangeDate($event)"
-      />
-    </div>
-    <div>
-      <select @change="handleChangeDays($event)" class="m-3 border-2">
-        <option value="" selected hidden>Select days</option>
-        <option value="even">Even days</option>
-        <option value="odd">Odd days</option>
-      </select>
-    </div>
-    <div class="demo-range">
-      <el-time-picker
-        v-model="value1"
-        is-range
-        range-separator="To"
-        start-placeholder="Start time"
-        end-placeholder="End time"
-        @change="handleChangeTime($event)"
-      />
+    <div class="my-[5px]">
+      <h1 v-if="!forms._id" class="text-center text-[30px] text-global1">
+        Add Group
+      </h1>
+      <h1 v-else class="text-center text-[30px] text-global1">Edit Group</h1>
     </div>
 
-    <div v-if="store?.rooms.length">
-      <select class="m-3 border-2" v-model="select_room">
-        <option value="" selected hidden>Select rooms</option>
-        <option
-          :value="item._id"
-          v-for="(item, index) in store?.rooms"
-          :key="index"
+    <Form @submit="save">
+      <!-- Group name -->
+      <label for="name" class="text-global1 text-[20px] font-normal"
+        >Name</label
+      >
+      <Field
+        rules="required"
+        :model-value="forms.name"
+        v-slot="{ errors }"
+        name="Name"
+      >
+        <input
+          type="text"
+          v-model="forms.name"
+          id="name"
+          placeholder="Enter group name"
+          class="w-full px-[15px] py-[12px] text-[21px] outline-none border-[1px] border-global1 rounded-md"
+        />
+        <p
+          class="text-error_color mt-2 text-[18px] font-medium"
+          v-if="errors && errors.length"
         >
-          {{ item.name }}
-        </option>
-      </select>
-    </div>
+          {{ errors[0] }}
+        </p>
+      </Field>
 
-    <div>
-      <select
-        class="m-3 border-2"
-        v-model="select_course"
-        @change="handlechangeCourse($event)"
-      >
-        <option value="" selected hidden>Select course</option>
-        <option
-          :value="item._id"
-          v-for="(item, index) in store2?.courses"
-          :key="index"
+      <!-- Start date -->
+      <div class="flex flex-col">
+        <label for="name" class="text-global1 text-[20px] font-normal"
+          >Select date</label
         >
-          {{ item.name }}
-        </option>
-      </select>
-      <select
-        v-if="store?.teachers.length"
-        class="m-3 border-2"
-        v-model="select_teacher"
-      >
-        <option value="" selected hidden>Select teacher</option>
-        <option
-          :value="item._id"
-          v-for="(item, index) in store?.teachers"
-          :key="index"
+        <Field
+          rules="required"
+          :model-value="date_time_picker.date"
+          v-slot="{ errors }"
+          name="Date"
         >
-          {{ item.first_name }}
-        </option>
-      </select>
-    </div>
-    <VButton @click="save" btn_type="primary">Create group</VButton>
+          <el-date-picker
+            v-model="date_time_picker.date"
+            type="date"
+            placeholder="Start a date"
+            :default-value="new Date()"
+            @change="handleChangeDate($event)"
+            style="
+              width: 100%;
+              height: 50px;
+              border: 1px solid #ba8d5b;
+              border-radius: 5px;
+              otline: none;
+              font-size: 21px;
+            "
+          />
+          <p
+            class="text-error_color mt-2 text-[18px] font-medium"
+            v-if="errors && errors.length"
+          >
+            {{ errors[0] }}
+          </p>
+        </Field>
+      </div>
+
+      <!-- Select days -->
+      <div class="flex flex-col">
+        <label for="name" class="text-global1 text-[20px] font-normal"
+          >Select days</label
+        >
+        <Field
+          rules="day_active"
+          :modelValue="forms.days"
+          v-slot="{ errors }"
+          name="Days"
+        >
+          <select
+            @change="handleChangeDays($event)"
+            class="w-full py-[12px] px-[10px] outline-none border-[1px] border-global1 rounded-md text-[21px]"
+          >
+            <option value="" selected hidden>Select days</option>
+            <option value="even">Even days</option>
+            <option value="odd">Odd days</option>
+          </select>
+          <p
+            class="text-error_color mt-2 text-[20px] font-medium"
+            v-if="errors && errors.length"
+          >
+            {{ errors[0] }}
+          </p>
+        </Field>
+      </div>
+
+      <!-- Start and end time -->
+      <div class="flex flex-col">
+        <label for="name" class="text-global1 text-[20px] font-normal">
+          Select time
+        </label>
+        <Field
+          rules="required"
+          :modelValue="date_time_picker.time"
+          v-slot="{ errors }"
+          name="Time"
+        >
+          <el-time-picker
+            v-model="date_time_picker.time"
+            is-range
+            range-separator="To"
+            start-placeholder="Start time"
+            end-placeholder="End time"
+            @change="handleChangeTime($event)"
+            style="
+              width: 100%;
+              height: 50px;
+              border: 1px solid #ba8d5b;
+              border-radius: 5px;
+              otline: none;
+              font-size: 21px;
+            "
+          />
+          <p
+            class="text-error_color mt-2 text-[20px] font-medium"
+            v-if="errors && errors.length"
+          >
+            {{ errors[0] }}
+          </p>
+        </Field>
+      </div>
+
+      <!-- Aviable rooms -->
+      <div v-if="group_store?.rooms.length" class="flex flex-col">
+        <label for="name" class="text-global1 text-[20px] font-normal">
+          Select Room
+        </label>
+        <Field
+          rules="required"
+          :model-value="forms.room"
+          v-slot="{ errors }"
+          name="Room"
+        >
+          <select
+            class="w-full py-[12px] px-[10px] outline-none border-[1px] border-global1 rounded-md text-[21px]"
+            v-model="forms.room"
+          >
+            <option value="" selected hidden>Select rooms</option>
+            <option
+              :value="item._id"
+              v-for="(item, index) in group_store?.rooms"
+              :key="index"
+            >
+              {{ item.name }}
+            </option>
+          </select>
+          <p
+            class="text-error_color mt-2 text-[20px] font-medium"
+            v-if="errors && errors.length"
+          >
+            {{ errors[0] }}
+          </p>
+        </Field>
+      </div>
+
+      <!-- Select course -->
+      <div class="flex flex-col">
+        <label for="name" class="text-global1 text-[20px] font-normal">
+          Select Course
+        </label>
+        <Field
+          rules="required"
+          :modelValue="forms.course"
+          v-slot="{ errors }"
+          name="Course"
+        >
+          <select
+            @change="handlechangeCourse($event)"
+            v-model="forms.course"
+            class="w-full py-[12px] px-[10px] outline-none border-[1px] border-global1 rounded-md text-[21px]"
+          >
+            <option value="" selected hidden>Select course</option>
+            <option
+              :value="item._id"
+              v-for="(item, index) in course_store?.courses"
+              :key="index"
+            >
+              {{ item.name }}
+            </option>
+          </select>
+          <p
+            class="text-error_color mt-2 text-[20px] font-medium"
+            v-if="errors && errors.length"
+          >
+            {{ errors[0] }}
+          </p>
+        </Field>
+      </div>
+
+      <!-- Select teacher -->
+      <div class="flex flex-col">
+        <label
+          v-if="group_store?.teachers.length"
+          for="name"
+          class="text-global1 text-[20px] font-normal"
+        >
+          Select Teacher
+        </label>
+        <Field
+          rules="required"
+          :modelValue="forms.teacher"
+          v-slot="{ errors }"
+          name="Teacher"
+        >
+          <select
+            v-model="forms.teacher"
+            v-if="group_store?.teachers.length"
+            class="w-full py-[12px] px-[10px] outline-none border-[1px] border-global1 rounded-md text-[21px]"
+          >
+            <option value="" selected hidden>Select teacher</option>
+            <option
+              :value="item._id"
+              v-for="(item, index) in group_store?.teachers"
+              :key="index"
+            >
+              {{ item.first_name }}
+            </option>
+          </select>
+          <p
+            class="text-error_color mt-2 text-[20px] font-medium"
+            v-if="errors && errors.length && group_store?.teachers.length"
+          >
+            {{ errors[0] }}
+          </p>
+        </Field>
+      </div>
+
+      <!-- Button -->
+      <div class="flex justify-center mt-[30px]">
+        <VButton @click="save" btn_type="primary">{{ btn_title }}</VButton>
+      </div>
+    </Form>
   </AppModal>
 </template>
 
 <script setup>
-import { reactive, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import AppModal from "../../../components/ui/app-modal.vue";
+import VButton from "../../../components/form/VButton.vue";
 import moment from "moment";
 import { useGroupStore } from "../../../stores/admin/group";
 import { useCourseStore } from "../../../stores/admin/course";
-import VButton from "../../../components/form/VButton.vue";
-
-const store = useGroupStore();
-const store2 = useCourseStore();
+import { Form, Field } from "vee-validate";
+const group_store = useGroupStore();
+const course_store = useCourseStore();
 const dialog = ref(false);
-const dialog2 = ref(false);
-const unique_id = ref();
-const days = ref(null);
-const group_name = ref("");
-const select_room = ref("");
-const select_course = ref("");
-const select_teacher = ref("");
-const start_time = ref();
-const end_time = ref();
-const value1 = ref([new Date(), new Date()]);
-const value2 = ref("");
-
-const handleChangeDays = (e) => {
-  if (e.target.value == "even") {
-    days.value = false;
-  } else {
-    days.value = true;
-  }
-};
-
-const values = reactive({
+const loading = ref(false);
+const forms = ref({
+  name: "",
   start_date: "",
   start_time: "",
   end_time: "",
-  days: days.value,
+  room: "",
+  course: "",
+  days: null,
+  status: true,
+  teacher: "",
+});
+const date_time_picker = ref({
+  date: "",
+  time: [new Date(), new Date()],
 });
 
+const handleChangeDays = (e) => {
+  if (e.target.value == "even") {
+    forms.value.days = false;
+  } else {
+    forms.value.days = true;
+  }
+};
+
 const handleChangeDate = (e) => {
-  values.start_date = moment(e).format("YYYY-MM-DD");
+  forms.value.start_date = moment(e).format("YYYY-MM-DD");
 };
 
 const handleChangeTime = async (e) => {
-  let a = e[0].getHours();
-  let b = e[0].getMinutes();
-  let d = e[1].getHours();
-  let f = e[1].getMinutes();
+  let get_h0 = e[0].getHours();
+  let get_m0 = e[0].getMinutes();
+  let get_h1 = e[1].getHours();
+  let get_m1 = e[1].getMinutes();
 
-  start_time.value = a * 60 + b;
-  end_time.value = d * 60 + f;
+  forms.value.start_time = get_h0 * 60 + get_m0;
+  forms.value.end_time = get_h1 * 60 + get_m1;
   let payload = {
-    start_date: values.start_date,
-    start_time: start_time.value,
-    end_time: end_time.value,
-    days: days.value,
+    start_date: forms.value.start_date,
+    start_time: forms.value.start_time,
+    end_time: forms.value.end_time,
+    days: forms.value.days,
   };
-  await store.aviableAdminRooms(payload);
+  await group_store.aviableAdminRooms(payload);
 };
 
 const handlechangeCourse = async (e) => {
-  await store.getGroupTeacher(e.target.value);
+  await group_store.getGroupTeacher(e.target.value);
 };
 
-let forms = ref({
-  name: "",
-  price: "",
-});
+const openModal = (item) => {
+  console.log(item);
+  if (item) {
+    forms.value = { ...item };
+  }
+  dialog.value = true;
+  course_store.getAdminCourses({
+    page: 1,
+    limit: 10,
+    last_page: null,
+  });
+};
 
 const save = async () => {
+  await group_store.createAdminGroup({ ...forms.value, teacher: null });
   let result = {
-    name: group_name.value,
-    start_date: values.start_date,
-    start_time: start_time.value,
-    end_time: end_time.value,
-    days: days.value,
-    room: select_room.value,
-    course: select_course.value,
-    // teacher: select_teacher.value,
-    status: true,
+    group: group_store?.group_id,
+    teacher: forms.value.teacher,
   };
-  await store.createAdminGroup(result);
-  let result2 = {
-    group: store?.group_id,
-    teacher: select_teacher.value,
-  };
-  await store.addGroupTeacher(result2);
-  console.log(store?.group_id, "group_id");
+  await group_store.addGroupTeacher(result);
 };
 
-const openModal = () => {
-  dialog.value = true;
-};
-
-watch(dialog, (value) => {
-  if (!value) {
-    forms.value = {};
+const btn_title = computed(() => {
+  if (loading.value) {
+    return "Loading";
+  } else {
+    if (forms.value._id) return "Edit group";
+    return "Create group";
   }
 });
 
-const openDeleteModal = (id) => {
-  unique_id.value = id;
-  dialog2.value = true;
-};
-
-watch(dialog, (value) => {
-  if (!value) {
-    forms.value = {};
-  }
-});
-
-defineExpose({ openModal, openDeleteModal });
+defineExpose({ openModal });
 </script>
 
 <style scoped>

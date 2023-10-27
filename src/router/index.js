@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
       } else if (role === "director") {
         return next({ name: "staffs" });
       } else if (role === "teacher") {
-        return next({ name: "groups" });
+        return next({ name: "group" });
       }
     } else {
       next();
