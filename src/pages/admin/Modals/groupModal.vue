@@ -306,8 +306,7 @@ const handlechangeCourse = async (e) => {
   await group_store.getGroupTeacher(e.target.value);
 };
 
-const openModal = (item) => {
-  console.log(item);
+const openModal = async (item) => {
   if (item) {
     forms.value = { ...item };
   }

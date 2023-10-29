@@ -16,6 +16,15 @@ export const useStudentStore = defineStore({
         console.log(err);
       }
     },
+    async getStudentSearch(search) {
+      try {
+        let res = await adminStudent.getStudentSearch(search);
+        this.students = res.student;
+        // params.last_page = Math.ceil(res.count / params.limit);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async createStudent(payload) {
       try {
         await adminStudent.createStudent(payload);
