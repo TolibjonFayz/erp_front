@@ -9,3 +9,7 @@ export const FormatTime = (time) => {
   let result = `${hour}:${minute}`;
   return result;
 };
+
+export const FormatDateAttendence = (data) => {
+  return moment(data).format("DD.MM");
+};
