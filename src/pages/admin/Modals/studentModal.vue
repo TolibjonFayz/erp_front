@@ -91,15 +91,18 @@ const btn_title = computed(() => {
 });
 
 const send = async (values) => {
-  loading.value = true;
-  const payload = {
+  let a = values.phone.split("");
+  let b = a.filter((item) => !isNaN(+item));
+  let c = "+" + b.join("");
+
+  let payload = {
     first_name: values.first_name,
     last_name: values.last_name,
     phone: values.phone,
   };
 
   if (!forms.value._id) {
-    await store.createStudent(payload);
+    await store.createStudent({ ...values, phone: c });
   } else {
     await store.updateStudent(payload, forms.value._id);
   }

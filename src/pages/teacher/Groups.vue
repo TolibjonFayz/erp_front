@@ -1,15 +1,20 @@
 <template>
   <div>
-    <h1>Groups</h1>
+    <h1>Teacher groups</h1>
     <app-table :headers="headers" :body="store?.teacher_groups">
       <template #body_start_date="{ item }">
         <span>{{ FormatDate(item?.start_date) }}</span>
       </template>
-
       <template #body_end_date="{ item }">
-        <span>{{ FormatDate(item?.end_date) }}</span> </template
-      >>
+        <span>{{ FormatDate(item?.end_date) }}</span>
+      </template>
+      <template #body_name="{ item }">
+        <router-link :to="`/teacher_single_group/${item._id}`">{{
+          item.name
+        }}</router-link>
+      </template>
     </app-table>
+    <div></div>
   </div>
 </template>
 
@@ -19,10 +24,15 @@ import { useTeacherGroupStore } from "../../stores/teacher/group";
 import { useAuthStore } from "../../stores/auth";
 import AppTable from "../../components/ui/Table.vue";
 import { FormatDate } from "../../hooks/FormatDate";
+import AppPagination from "../../components/ui/app-pagination.vue";
 
 const store = useTeacherGroupStore();
 const store2 = useAuthStore();
-
+const params = {
+  page: 1,
+  limit: 10,
+  last_page: null,
+};
 const headers = ref([
   { title: "Group name", value: "name" },
   { title: "Status", value: "status" },

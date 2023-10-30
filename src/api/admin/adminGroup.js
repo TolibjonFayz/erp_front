@@ -22,7 +22,7 @@ const adminGroup = {
     return axiosClient.post(url, payload);
   },
   async createAdminStudent(payload) {
-    const url = `groups/add-student`;
+    const url = "groups/add-student";
     return axiosClient.post(url, payload);
   },
   getGroupTeacher(id) {

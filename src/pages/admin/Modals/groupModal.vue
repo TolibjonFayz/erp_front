@@ -40,7 +40,7 @@
         >
         <Field
           rules="required"
-          :model-value="date_time_picker.date"
+          :model-value="forms.start_date"
           v-slot="{ errors }"
           name="Date"
         >
@@ -48,7 +48,9 @@
             v-model="date_time_picker.date"
             type="date"
             placeholder="Start a date"
-            :default-value="new Date()"
+            :default-value="
+              forms.start_date ? new Date(forms.start_date) : null
+            "
             @change="handleChangeDate($event)"
             style="
               width: 100%;
@@ -103,7 +105,7 @@
         </label>
         <Field
           rules="required"
-          :modelValue="date_time_picker.time"
+          :modelValue="forms.start_time"
           v-slot="{ errors }"
           name="Time"
         >
@@ -132,7 +134,7 @@
         </Field>
       </div>
 
-      <!-- Aviable rooms -->
+      <!-- Aviable group -->
       <div v-if="group_store?.rooms.length" class="flex flex-col">
         <label for="name" class="text-global1 text-[20px] font-normal">
           Select Room
@@ -172,16 +174,16 @@
         </label>
         <Field
           rules="required"
-          :modelValue="forms.course"
+          :modelValue="forms.course._id"
           v-slot="{ errors }"
           name="Course"
         >
           <select
+            v-model="forms.course._id"
             @change="handlechangeCourse($event)"
-            v-model="forms.course"
             class="w-full py-[12px] px-[10px] outline-none border-[1px] border-global1 rounded-md text-[21px]"
           >
-            <option value="" selected hidden>Select course</option>
+            <!-- <option value="" selected hidden>Select course</option> -->
             <option
               :value="item._id"
               v-for="(item, index) in course_store?.courses"
@@ -202,7 +204,7 @@
       <!-- Select teacher -->
       <div class="flex flex-col">
         <label
-          v-if="group_store?.teachers.length"
+          v-if="forms._id || group_store?.teachers.length"
           for="name"
           class="text-global1 text-[20px] font-normal"
         >
@@ -216,7 +218,6 @@
         >
           <select
             v-model="forms.teacher"
-            v-if="group_store?.teachers.length"
             class="w-full py-[12px] px-[10px] outline-none border-[1px] border-global1 rounded-md text-[21px]"
           >
             <option value="" selected hidden>Select teacher</option>
@@ -246,7 +247,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, reactive } from "vue";
 import AppModal from "../../../components/ui/app-modal.vue";
 import VButton from "../../../components/form/VButton.vue";
 import moment from "moment";
@@ -257,32 +258,35 @@ const group_store = useGroupStore();
 const course_store = useCourseStore();
 const dialog = ref(false);
 const loading = ref(false);
-const forms = ref({
+const course_name = ref();
+const forms = reactive({
   name: "",
   start_date: "",
   start_time: "",
   end_time: "",
   room: "",
-  course: "",
+  course: {
+    _id: "",
+  },
   days: null,
   status: true,
   teacher: "",
 });
-const date_time_picker = ref({
+const date_time_picker = reactive({
   date: "",
   time: [new Date(), new Date()],
 });
 
 const handleChangeDays = (e) => {
   if (e.target.value == "even") {
-    forms.value.days = false;
+    forms.days = false;
   } else {
-    forms.value.days = true;
+    forms.days = true;
   }
 };
 
 const handleChangeDate = (e) => {
-  forms.value.start_date = moment(e).format("YYYY-MM-DD");
+  forms.start_date = moment(e).format("YYYY-MM-DD");
 };
 
 const handleChangeTime = async (e) => {
@@ -291,24 +295,27 @@ const handleChangeTime = async (e) => {
   let get_h1 = e[1].getHours();
   let get_m1 = e[1].getMinutes();
 
-  forms.value.start_time = get_h0 * 60 + get_m0;
-  forms.value.end_time = get_h1 * 60 + get_m1;
+  forms.start_time = get_h0 * 60 + get_m0;
+  forms.end_time = get_h1 * 60 + get_m1;
   let payload = {
-    start_date: forms.value.start_date,
-    start_time: forms.value.start_time,
-    end_time: forms.value.end_time,
-    days: forms.value.days,
+    start_date: forms.start_date,
+    start_time: forms.start_time,
+    end_time: forms.end_time,
+    days: forms.days,
   };
   await group_store.aviableAdminRooms(payload);
 };
 
 const handlechangeCourse = async (e) => {
+  // course_name = e.target.value;
   await group_store.getGroupTeacher(e.target.value);
 };
 
 const openModal = async (item) => {
   if (item) {
-    forms.value = { ...item };
+    forms = { ...item };
+    date_time_picker.date = item.start_date;
+    await group_store.getGroupTeacher(item.course._id);
   }
   dialog.value = true;
   course_store.getAdminCourses({
@@ -319,10 +326,14 @@ const openModal = async (item) => {
 };
 
 const save = async () => {
-  await group_store.createAdminGroup({ ...forms.value, teacher: null });
+  await group_store.createAdminGroup({
+    ...forms,
+    teacher: null,
+    course: forms.course._id,
+  });
   let result = {
     group: group_store?.group_id,
-    teacher: forms.value.teacher,
+    teacher: forms.teacher,
   };
   await group_store.addGroupTeacher(result);
 };
@@ -331,7 +342,7 @@ const btn_title = computed(() => {
   if (loading.value) {
     return "Loading";
   } else {
-    if (forms.value._id) return "Edit group";
+    if (forms._id) return "Edit group";
     return "Create group";
   }
 });

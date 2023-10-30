@@ -47,13 +47,7 @@
       </template>
     </AppTable>
 
-    <v-pagination
-      v-model="params.page"
-      :pages="params.last_page"
-      :range-size="1"
-      active-color="#DCEDFF"
-      @update:modelValue="store.getAdminGroups(params)"
-    />
+    <AppPagination :params="params" :changeParams="getGroups" />
   </div>
 </template>
 
@@ -65,8 +59,7 @@ import VButton from "../../components/form/VButton.vue";
 import groupModal from "./Modals/groupModal.vue";
 import { FormatDate, FormatTime } from "../../hooks/FormatDate";
 import VActions from "../../components/form/VActions.vue";
-import VPagination from "@hennge/vue3-pagination";
-import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+import AppPagination from "../../components/ui/app-pagination.vue";
 const store = useGroupStore();
 const modal_value = ref();
 const params = ref({
@@ -77,6 +70,10 @@ const params = ref({
 
 const openModal = () => {
   modal_value.value.openModal();
+};
+
+const getGroups = () => {
+  store.getAdminGroups(params.value);
 };
 
 const headers = ref([
@@ -92,8 +89,8 @@ const headers = ref([
   { title: "Action", value: "action" },
 ]);
 
-onMounted(() => {
-  store.getAdminGroups(params.value);
+onMounted(async () => {
+  await store.getAdminGroups(params.value);
 });
 </script>
 
