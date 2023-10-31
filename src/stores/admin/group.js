@@ -8,6 +8,8 @@ export const useGroupStore = defineStore({
     rooms: [],
     teachers: [],
     group_id: "",
+    single_group_lessons: [],
+    single_group_students: [],
   }),
   actions: {
     async getAdminGroups(params) {
@@ -23,6 +25,37 @@ export const useGroupStore = defineStore({
       try {
         let res = await adminGroup.getGroupTeacher(id);
         this.teachers = res.teachers;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getLessonsSingleGroup(id) {
+      try {
+        let res = await adminGroup.getLessonsSingleGroup(id);
+        this.single_group_lessons = res.lessons;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getStudentsSingleGroup(id) {
+      try {
+        let res = await adminGroup.getStudentsSingleGroup(id);
+        this.single_group_students = res;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async updateLessonSingleGroup(lesson_id, payload) {
+      try {
+        let res = await adminGroup.updateLessonsSingleGroup(lesson_id, payload);
+        // this.single_group_lessons = res.lessons;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async updateStudentsSingleGroup(lesson_id, payload) {
+      try {
+        let res = await adminGroup.updateStudentsSingleGroup(lesson_id, payload);
       } catch (err) {
         console.log(err);
       }

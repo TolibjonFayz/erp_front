@@ -29,6 +29,22 @@ const adminGroup = {
     const url = `courses/all-teachers/${id}`;
     return axiosClient.get(url);
   },
+  getLessonsSingleGroup(id) {
+    const url = `lessons/group/${id}/q?`;
+    return axiosClient.get(url);
+  },
+  getStudentsSingleGroup(id) {
+    const url = `groups/attendance/${id}/all/q?`;
+    return axiosClient.get(url);
+  },
+  updateLessonsSingleGroup(lesson_id, payload) {
+    const url = `lessons/lesson/comment/${lesson_id}`;
+    return axiosClient.put(url, payload);
+  },
+  updateStudentsSingleGroup(lesson_id, payload) {
+    const url = `groups/attendance/update/lesson/${lesson_id}`;
+    return axiosClient.put(url, payload);
+  },
   async addGroupTeacher(payload) {
     const url = `groups/add-teacher`;
     return axiosClient.post(url, payload);
