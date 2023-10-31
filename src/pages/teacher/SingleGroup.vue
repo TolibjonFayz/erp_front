@@ -1,8 +1,42 @@
 <template>
   <div class="p-[20px]">
-    <h1>Single group</h1>
     <checkStudents ref="modal_value" />
-    <VButton btn_type="primary" @click="openModal">Davomat</VButton>
+    <div class="w-full flex items-center justify-between gap-5">
+      <div class="w-full">
+        <el-collapse v-model="activeNames" @change="handleChange">
+          <el-collapse-item title="All lessons">
+            <div class="w-full flex gap-2 flex-wrap">
+              <div v-for="(item, index) in store?.group_lessons" :key="index">
+                <el-popover
+                  placement="top-start"
+                  :title="FormatDate(item.date) + ' ' + `Lesson${item?.number}`"
+                  :width="200"
+                  trigger="hover"
+                  transition="100 linear"
+                  :content="item?.description"
+                >
+                  <template #reference>
+                    <div
+                      class="w-[40px] h-[40px] border-[1px] px-[5px] text-global1 border-global1 flex items-center"
+                      :class="
+                        !item.pass
+                          ? 'text-global1'
+                          : 'bg-[crimson] text-[#fff] border-none'
+                      "
+                    >
+                      {{ FormatDateAttendence(item.date) }}
+                    </div>
+                  </template>
+                </el-popover>
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+      <VButton btn_type="primary" @click="openModal">
+        <svgIcon type="mdi" :path="mdiMenu"></svgIcon>
+      </VButton>
+    </div>
     <div class="demo-collapse">
       <el-collapse>
         <el-collapse-item
@@ -26,7 +60,7 @@
                     class="w-[40px] h-[40px] border-[1px] px-[5px] text-global1 border-global1 flex items-center"
                     :class="
                       item2.participated
-                        ? ''
+                        ? 'text-global1'
                         : 'bg-[crimson] text-[#fff] border-none'
                     "
                   >
@@ -49,6 +83,8 @@ import { useRoute } from "vue-router";
 import { FormatDate, FormatDateAttendence } from "../../hooks/FormatDate";
 import VButton from "../../components/form/VButton.vue";
 import checkStudents from "./Modals/checkStudents.vue";
+import svgIcon from "@jamescoyle/vue-icon";
+import { mdiMenu } from "@mdi/js";
 const store = useTeacherSingleGroupStore();
 const route = useRoute();
 const modal_value = ref();
@@ -59,7 +95,7 @@ const params = ref({
 });
 
 const openModal = async () => {
-  await store.getTeacherSingleLesson(route.params.id, "2023-10-31");
+  await store.getTeacherSingleLesson(route.params.id, "2023-11-04");
   modal_value.value.openModal();
   let date = FormatDate(new Date());
 };
@@ -67,13 +103,14 @@ const openModal = async () => {
 onMounted(async () => {
   // await store.getTeacherSingleGroup(route.params.id);
   store.getAllStudentsAttendance(route.params.id, params.value);
+  store.getAllGroupLessons(route.params.id);
 });
 </script>
 
 <style lang="scss" scoped>
 .el-collapse-item {
   color: #ba8d5b;
-  padding: 20px;
+  padding: 10px;
   border: 1px solid #ba8d5b;
   margin: 5px 0;
 }
