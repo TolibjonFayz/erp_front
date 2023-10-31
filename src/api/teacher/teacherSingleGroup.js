@@ -21,6 +21,10 @@ const teacherSingleGroup = {
     const url = `lessons/group/${id}/q?page=${params.page}&limit=${params.limit}`;
     return axiosClient.get(url);
   },
+  uploadTeacherVideo(payload) {
+    const url = `lesson-videos/upload`;
+    return axiosClient.post(url, payload);
+  },
 };
 
 export default teacherSingleGroup;

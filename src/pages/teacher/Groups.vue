@@ -5,9 +5,11 @@
       <template #body_start_date="{ item }">
         <span>{{ FormatDate(item?.start_date) }}</span>
       </template>
+
       <template #body_end_date="{ item }">
         <span>{{ FormatDate(item?.end_date) }}</span>
       </template>
+
       <template #body_name="{ item }">
         <router-link :to="`/teacher_single_group/${item._id}`">{{
           item.name
@@ -24,7 +26,6 @@ import { useTeacherGroupStore } from "../../stores/teacher/group";
 import { useAuthStore } from "../../stores/auth";
 import AppTable from "../../components/ui/Table.vue";
 import { FormatDate } from "../../hooks/FormatDate";
-import AppPagination from "../../components/ui/app-pagination.vue";
 
 const store = useTeacherGroupStore();
 const store2 = useAuthStore();

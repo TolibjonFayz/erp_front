@@ -7,6 +7,7 @@ export const useTeacherSingleGroupStore = defineStore({
     teacher_students: [],
     lessons: [],
     group_lessons: [],
+    pass_lessons: [],
   }),
   actions: {
     async getTeacherSingleLesson(group_id, date) {
@@ -46,10 +47,18 @@ export const useTeacherSingleGroupStore = defineStore({
         console.log(err);
       }
     },
-    async getAllGroupLessons(id, params) {
+    async getAllGroupLessons(id) {
       try {
         let res = await teacherSingleGroup.getAllGroupLessons(id);
         this.group_lessons = res.lessons;
+        this.pass_lessons = res.lessons.filter((item) => item.pass == true);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async uploadTeacherVideo(payload) {
+      try {
+        let res = await teacherSingleGroup.uploadTeacherVideo(payload);
       } catch (err) {
         console.log(err);
       }
